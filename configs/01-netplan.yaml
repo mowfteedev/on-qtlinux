@@ -3,13 +3,13 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-    ens33:                  # <--- THAY ĐỔI: Tên card mạng xem từ lệnh 'ip link'
+    ens33:                  # Kiểm tra tên card bằng lệnh 'ip link'
       dhcp4: false
       addresses:
-        - 10.0.0.2/8        # <--- THAY ĐỔI: Địa chỉ IP tĩnh theo đề bài
+        - 10.0.0.2/8
       routes:
         - to: default
-          via: 10.0.0.254   # <--- THAY ĐỔI: Địa chỉ Gateway theo đề bài
+          via: 10.0.0.254
       nameservers:
-        addresses: [10.0.0.2, 8.8.8.8]   # <--- THAY ĐỔI: IP máy chủ DNS
-        search: [dhcnhn.com]             # <--- THAY ĐỔI: Tên miền tìm kiếm
+        addresses: [10.0.0.2, 8.8.8.8]
+        search: [dhcnhn.com]

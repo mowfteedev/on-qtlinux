@@ -11,7 +11,7 @@ sudo apt install isc-dhcp-server -y
 dpkg -l isc-dhcp-server
 
 # Khai báo card mạng lắng nghe trong /etc/default/isc-dhcp-server
-sudo sed -i 's/INTERFACESv4=.*/INTERFACESv4="ens33"/' /etc/default/isc-dhcp-server   # <--- THAY ĐỔI: Tên card mạng thực tế
+sudo sed -i 's/INTERFACESv4=.*/INTERFACESv4="ens33"/' /etc/default/isc-dhcp-server   # SỬA: Tên card mạng thực tế
 ```
 
 ---
@@ -24,28 +24,28 @@ Thêm cấu hình vào cuối file `/etc/dhcp/dhcpd.conf`:
 # Quy đổi thời gian thuê thường gặp trong đề thi:
 # 15 phút = 15 * 60 = 900 giây (mặc định)
 # 1,1 ngày = 1.1 * 86400 = 95040 giây (tối đa)
-default-lease-time 900;                       # <--- THAY ĐỔI: Thời gian thuê mặc định (giây)
-max-lease-time 95040;                         # <--- THAY ĐỔI: Thời gian thuê tối đa (giây)
+default-lease-time 900;                       # SỬA: Thời gian thuê mặc định (giây)
+max-lease-time 95040;                         # SỬA: Thời gian thuê tối đa (giây)
 authoritative;
 
-subnet 10.0.0.0 netmask 255.0.0.0 {           # <--- THAY ĐỔI: Địa chỉ mạng và subnet mask
-    option routers 10.0.0.254;                 # <--- THAY ĐỔI: Địa chỉ Gateway cấp cho Client
+subnet 10.0.0.0 netmask 255.0.0.0 {
+    option routers 10.0.0.254;
     option subnet-mask 255.0.0.0;
-    option domain-name "dhcnhn.com";           # <--- THAY ĐỔI: Tên miền
-    option domain-name-servers 10.0.0.2;         # <--- THAY ĐỔI: Địa chỉ máy chủ DNS
+    option domain-name "dhcnhn.com";           # SỬA: Tên miền
+    option domain-name-servers 10.0.0.2;
     
     # 1. Dải cấp động cho sinh viên
-    range 10.0.0.100 10.0.0.200;               # <--- THAY ĐỔI: Start IP và End IP của dải cấp động
+    range 10.0.0.100 10.0.0.200;               # SỬA: Start IP và End IP của dải cấp động
 
     # 2. DHCP gán cố định (Reservation) theo địa chỉ MAC
     host may-giang-vien {
-        hardware ethernet 00:0c:29:aa:bb:cc;  # <--- THAY ĐỔI: Địa chỉ MAC card mạng của máy GV
-        fixed-address 10.0.0.5;                # <--- THAY ĐỔI: Địa chỉ IP cố định cần cấp
+        hardware ethernet 00:0c:29:aa:bb:cc;  # SỬA: Địa chỉ MAC card mạng của máy GV
+        fixed-address 10.0.0.5;                # SỬA: Địa chỉ IP cố định cần cấp
     }
 
     # 3. Bộ lọc từ chối cấp IP (Deny booting - Trang 15)
     host may-bi-chan {
-        hardware ethernet 22:22:22:22:22:22;  # <--- THAY ĐỔI: Địa chỉ MAC cần từ chối cấp phát
+        hardware ethernet 22:22:22:22:22:22;  # SỬA: Địa chỉ MAC cần từ chối cấp phát
         deny booting;
     }
 }

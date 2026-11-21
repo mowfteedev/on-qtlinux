@@ -90,11 +90,8 @@ sudo nano /etc/dhcp/dhcpd.conf
 ```
 2. Thêm vào cuối file cấu hình:
 ```text
-# Thời gian thuê mặc định: 15 phút (15 * 60 = 900 giây)
-default-lease-time 900;
-
-# Thời gian thuê tối đa: 1,1 ngày (1.1 * 86400 = 95040 giây)
-max-lease-time 95040;
+default-lease-time 900;       # SỬA: 15 phút = 900s
+max-lease-time 95040;         # SỬA: 1,1 ngày = 95040s
 authoritative;
 
 subnet 10.0.0.0 netmask 255.0.0.0 {
@@ -103,12 +100,10 @@ subnet 10.0.0.0 netmask 255.0.0.0 {
     option domain-name "dhcnhn.com";
     option domain-name-servers 10.0.0.2;
 
-    # Cấp dải động từ 10.0.0.100 đến 10.0.0.200
-    range 10.0.0.100 10.0.0.200;
+    range 10.0.0.100 10.0.0.200;       # SỬA: Dải IP theo đề
 
-    # Từ chối cấp tự động cấu hình mạng cho Client có MAC 22:22:22:22:22:22
     host may-bi-chan {
-        hardware ethernet 22:22:22:22:22:22;
+        hardware ethernet 22:22:22:22:22:22;  # SỬA: MAC cần chặn
         deny booting;
     }
 }

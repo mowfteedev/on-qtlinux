@@ -10,12 +10,12 @@ Thực hiện trên máy chủ điều khiển miền `dc01.dhcnhn.com`:
 
 ```bash
 # 1. Tạo vùng tra cứu xuôi và ngược
-samba-tool dns zonecreate dc01.dhcnhn.com googlehaui.com -U administrator   # <--- THAY ĐỔI: Tên zone xuôi cần tạo
-samba-tool dns zonecreate dc01.dhcnhn.com 10.in-addr.arpa -U administrator  # <--- THAY ĐỔI: Tên zone ngược (dải 10.0.0.0/8 đảo thành 10.in-addr.arpa)
+samba-tool dns zonecreate dc01.dhcnhn.com googlehaui.com -U administrator   # SỬA: Tên zone xuôi cần tạo
+samba-tool dns zonecreate dc01.dhcnhn.com 10.in-addr.arpa -U administrator  # SỬA: Tên zone ngược (dải 10.0.0.0/8 đảo thành 10.in-addr.arpa)
 
 # 2. Thêm bản ghi A (xuôi) và PTR (ngược)
-samba-tool dns add dc01.dhcnhn.com googlehaui.com www A 10.0.0.2 -U administrator         # <--- THAY ĐỔI: Tên bản ghi và IP
-samba-tool dns add dc01.dhcnhn.com 10.in-addr.arpa 2.0.0 PTR www.googlehaui.com -U administrator # <--- THAY ĐỔI: 10.0.0.2 đảo thành 2.0.0
+samba-tool dns add dc01.dhcnhn.com googlehaui.com www A 10.0.0.2 -U administrator         # SỬA: Tên bản ghi và IP
+samba-tool dns add dc01.dhcnhn.com 10.in-addr.arpa 2.0.0 PTR www.googlehaui.com -U administrator # SỬA: 10.0.0.2 đảo thành 2.0.0
 
 # 3. Cập nhật và Xóa bản ghi
 samba-tool dns update dc01.dhcnhn.com googlehaui.com www A 10.0.0.2 10.0.0.11 -U administrator # <--- Cập nhật IP cũ sang mới
@@ -41,12 +41,12 @@ sudo systemctl status bind9
 
 ### 2.2. Khai báo vùng trong `/etc/bind/named.conf.local`
 ```text
-zone "dhcnhn.com" {                           # <--- THAY ĐỔI: Tên vùng xuôi
+zone "dhcnhn.com" {                           # SỬA: Tên vùng xuôi
     type master;
     file "/etc/bind/forward.dhcnhn.com";
 };
 
-zone "10.in-addr.arpa" {                      # <--- THAY ĐỔI: Tên vùng ngược
+zone "10.in-addr.arpa" {                      # SỬA: Tên vùng ngược
     type master;
     file "/etc/bind/reverse.dhcnhn.com";
 };

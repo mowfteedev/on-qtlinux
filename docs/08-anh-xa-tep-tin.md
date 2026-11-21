@@ -9,12 +9,12 @@ Tài liệu chi tiết theo nguyên mẫu giáo trình trang 20 và 21 về chia
 Thêm khối cấu hình vào cuối file `/etc/samba/smb.conf`:
 
 ```ini
-[share]                                        # <--- THAY ĐỔI: Tên thư mục chia sẻ hiển thị qua mạng
+[share]                                        # SỬA: Tên thư mục chia sẻ hiển thị qua mạng
    comment = Thu muc chia se chung cho GV va SV
-   path = /srv/share                           # <--- THAY ĐỔI: Đường dẫn thư mục cục bộ chia sẻ
-   read only = no                              # <--- THAY ĐỔI: no là cho phép ghi, yes là chỉ cho đọc
+   path = /srv/share                           # SỬA: Đường dẫn thư mục cục bộ chia sẻ
+   read only = no                              # SỬA: no là cho phép ghi, yes là chỉ cho đọc
    browsable = yes
-   guest ok = yes                              # <--- THAY ĐỔI: yes là cho phép khách truy cập không cần pass
+   guest ok = yes                              # SỬA: yes là cho phép khách truy cập không cần pass
    create mask = 0775
    directory mask = 0775
 ```
@@ -35,10 +35,10 @@ sudo systemctl restart nmbd
 
 ```bash
 # Tạo thư mục điểm gắn kết
-sudo mkdir -p /mnt/share                       # <--- THAY ĐỔI: Đường dẫn thư mục mount trên máy trạm
+sudo mkdir -p /mnt/share                       # SỬA: Đường dẫn thư mục mount trên máy trạm
 
 # Gắn kết (Mount) thư mục mạng bằng tài khoản quản trị
-sudo mount //10.0.0.2/share /mnt/share -o user=administrator,pass=Dhcnhn1   # <--- THAY ĐỔI: IP, tên share, user và pass
+sudo mount //10.0.0.2/share /mnt/share -o user=administrator,pass=Dhcnhn1   # SỬA: IP, tên share, user và pass
 
 # Kiểm tra thư mục sau khi mount
 ls -la /mnt/share
@@ -51,5 +51,5 @@ sudo umount //10.0.0.2/share -vA
 ---
 
 ## 3. Ánh xạ trên máy trạm Windows Client1
-* **Truy cập nhanh:** Nhấn `Win + R` $\rightarrow$ gõ: `\\10.0.0.2\share` *(<--- THAY ĐỔI: IP máy chủ và tên share)*.
+* **Truy cập nhanh:** Nhấn `Win + R` $\rightarrow$ gõ: `\\10.0.0.2\share` .
 * **Map Network Drive:** Vào **This PC** $\rightarrow$ chọn **Map network drive** $\rightarrow$ chọn ổ `Z:` $\rightarrow$ Folder: `\\10.0.0.2\share`.

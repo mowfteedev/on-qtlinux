@@ -19,7 +19,7 @@ Tạo thư mục lưu trữ mã nguồn cho 3 website: `googlehaui.com`, `youtub
 
 ```bash
 for site in googlehaui youtubehaui facebookhaui; do
-    sudo mkdir -p /var/www/${site}.com                                            # <--- THAY ĐỔI: Tên thư mục web
+    sudo mkdir -p /var/www/${site}.com                                            # SỬA: Tên thư mục web
     echo "<h1>Welcome to ${site}.com</h1>" | sudo tee /var/www/${site}.com/index.html
     sudo chown -R www-data:www-data /var/www/${site}.com
     sudo chmod -R 755 /var/www/${site}.com
@@ -55,9 +55,9 @@ Mẫu file `/etc/apache2/sites-available/googlehaui.com.conf`:
 ```apache
 <VirtualHost *:80>
     ServerAdmin webmaster@googlehaui.com
-    DocumentRoot /var/www/googlehaui.com       # <--- THAY ĐỔI: Đường dẫn DocumentRoot
-    ServerName googlehaui.com                 # <--- THAY ĐỔI: Tên miền chính
-    ServerAlias www.googlehaui.com             # <--- THAY ĐỔI: Tên miền bí danh (alias)
+    DocumentRoot /var/www/googlehaui.com       # SỬA: Đường dẫn DocumentRoot
+    ServerName googlehaui.com                 # SỬA: Tên miền chính
+    ServerAlias www.googlehaui.com             # SỬA: Tên miền bí danh (alias)
     ErrorLog ${APACHE_LOG_DIR}/googlehaui_error.log
     CustomLog ${APACHE_LOG_DIR}/googlehaui_access.log combined
 </VirtualHost>
@@ -68,7 +68,7 @@ Mẫu file `/etc/apache2/sites-available/googlehaui.com.conf`:
 ## 4. Kích hoạt và vô hiệu hóa Site (Trang 15)
 ```bash
 # Kích hoạt các Virtual Host mới
-sudo a2ensite googlehaui.com.conf youtubehaui.com.conf facebookhaui.com.conf     # <--- THAY ĐỔI: Tên file config cần bật
+sudo a2ensite googlehaui.com.conf youtubehaui.com.conf facebookhaui.com.conf     # SỬA: Tên file config cần bật
 
 # Vô hiệu hóa site mặc định (nếu cần)
 sudo a2dissite 000-default.conf

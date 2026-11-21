@@ -8,7 +8,7 @@ Hướng dẫn cấu hình máy trạm Windows Client1 và Linux Client2 gia nh�
 * Cả hai máy trạm bắt buộc phải trỏ DNS chính về IP của máy chủ DC01: `10.0.0.2`.
 * Kiểm tra phân giải tên miền:
   ```bash
-  ping dhcnhn.com             # <--- THAY ĐỔI: Tên miền theo yêu cầu đề bài
+  ping dhcnhn.com             # SỬA: Tên miền theo yêu cầu đề bài
   ```
   Kết quả phải trả về phản hồi từ IP `10.0.0.2` (DC01).
 
@@ -17,10 +17,10 @@ Hướng dẫn cấu hình máy trạm Windows Client1 và Linux Client2 gia nh�
 ## 2. Máy trạm Windows Client1 tham gia miền
 1. Nhấn `Win + R`, nhập `sysdm.cpl` và nhấn Enter.
 2. Tại tab **Computer Name**, chọn nút **Change...**
-3. Tại mục **Member of**, tích chọn **Domain**, nhập: `dhcnhn.com` *(<--- THAY ĐỔI: Tên miền theo đề)*.
+3. Tại mục **Member of**, tích chọn **Domain**, nhập: `dhcnhn.com` .
 4. Nhập thông tin tài khoản quản trị miền:
    * Username: `administrator` (hoặc `dhcnhn\administrator`)
-   * Password: `Dhcnhn1` *(<--- THAY ĐỔI: Mật khẩu quản trị DC)*
+   * Password: `Dhcnhn1` 
 5. Khởi động lại máy tính $\rightarrow$ Đăng nhập bằng tài khoản miền: `dhcnhn\gv1`.
 
 ---
@@ -39,11 +39,11 @@ echo "session optional pam_mkhomedir.so skel=/etc/skel umask=0077" | sudo tee -a
 echo "* ; * ; * ; Al0000-2400 ; domain users" | sudo tee -a /etc/security/group.conf
 
 # 4. Quét và tham gia miền
-sudo realm discover dhcnhn.com                          # <--- THAY ĐỔI: Tên miền cần quét
-sudo realm -v join dhcnhn.com -U administrator          # <--- THAY ĐỔI: Tên miền và user quản trị
+sudo realm discover dhcnhn.com                          # SỬA: Tên miền cần quét
+sudo realm -v join dhcnhn.com -U administrator          # SỬA: Tên miền và user quản trị
 
 # 5. Kiểm tra kết quả
 realm list
-id gv1@dhcnhn.com                                       # <--- THAY ĐỔI: Tên user kiểm tra
+id gv1@dhcnhn.com                                       # SỬA: Tên user kiểm tra
 su - gv1@dhcnhn.com
 ```

@@ -13,16 +13,16 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-    ens33:                  # <--- THAY ĐỔI: Tên card mạng thực tế xem từ lệnh 'ip link'
+    ens33:                  # SỬA: Tên card mạng thực tế xem từ lệnh 'ip link'
       dhcp4: false
       addresses:
-        - 10.0.0.2/8        # <--- THAY ĐỔI: Địa chỉ IP tĩnh và prefix (/8) theo đề bài
+        - 10.0.0.2/8
       routes:
         - to: default
-          via: 10.0.0.254   # <--- THAY ĐỔI: Địa chỉ Gateway theo đề bài
+          via: 10.0.0.254
       nameservers:
-        addresses: [10.0.0.2, 8.8.8.8]   # <--- THAY ĐỔI: Địa chỉ máy chủ DNS theo đề bài
-        search: [dhcnhn.com]             # <--- THAY ĐỔI: Domain search theo đề bài
+        addresses: [10.0.0.2, 8.8.8.8]
+        search: [dhcnhn.com]
 ```
 
 ---
@@ -44,7 +44,7 @@ sudo cat /etc/resolv.conf
 sudo dhclient -r; sudo dhclient
 
 # Kiểm tra kết nối
-ping -c 2 10.0.0.254        # <--- THAY ĐỔI: IP Gateway cần kiểm tra
+ping -c 2 10.0.0.254        # SỬA: IP Gateway cần kiểm tra
 ping -c 2 8.8.8.8           # Kiểm tra thông ra Internet
 ```
 

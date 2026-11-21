@@ -34,10 +34,10 @@ sudo mkdir -p /srv/share/{gv,sv}
 sudo touch /srv/share/gv/gv.txt /srv/share/sv/sv.txt
 
 # Áp dụng quyền
-sudo chmod 765 /srv/share                      # <--- THAY ĐỔI: Mã số octal tính từ ma trận quyền của đề
-sudo chmod 750 /srv/share/gv                   # <--- THAY ĐỔI: Mã số octal tính từ ma trận quyền của đề
-sudo chmod -R 671 /srv/share/sv                # <--- THAY ĐỔI: Cờ -R bắt buộc khi đề yêu cầu áp dụng cả thư mục con
-sudo chmod 755 /srv/share/gv/gv.txt            # <--- THAY ĐỔI: Mã số octal tính từ ma trận quyền của đề
+sudo chmod 765 /srv/share                      # SỬA: Mã số octal tính từ ma trận quyền của đề
+sudo chmod 750 /srv/share/gv                   # SỬA: Mã số octal tính từ ma trận quyền của đề
+sudo chmod -R 671 /srv/share/sv                # SỬA: Cờ -R bắt buộc khi đề yêu cầu áp dụng cả thư mục con
+sudo chmod 755 /srv/share/gv/gv.txt            # SỬA: Mã số octal tính từ ma trận quyền của đề
 ```
 
 ---
@@ -75,10 +75,10 @@ sudo chown dhcnhn\\administrator:"dhcnhn\domain users" /srv/share
 getfacl /srv/share
 
 # Gán quyền rwx cho nhóm Sinhvien vào thư mục /srv/share
-sudo setfacl -m g:Sinhvien:rwx /srv/share      # <--- THAY ĐỔI: Tên nhóm và quyền cần cấp
+sudo setfacl -m g:Sinhvien:rwx /srv/share      # SỬA: Tên nhóm và quyền cần cấp
 
 # Xóa quyền ACL của nhóm Sinhvien khỏi thư mục
-sudo setfacl -x g:Sinhvien /srv/share          # <--- THAY ĐỔI: Tên nhóm cần thu hồi quyền
+sudo setfacl -x g:Sinhvien /srv/share          # SỬA: Tên nhóm cần thu hồi quyền
 ```
 
 ---
