@@ -1,77 +1,55 @@
 # 08. Chia Sẻ Thư Mục Qua Mạng Samba Và Ánh Xạ Từ Client
 
-Hướng dẫn cấu hình dịch vụ Samba Share trên máy chủ DC01 và ánh xạ ổ đĩa mạng từ máy trạm Windows Client1 và Linux Client2.
+Tài liệu chi tiết theo nguyên mẫu giáo trình trang 20 và 21 về chia sẻ thư mục qua giao thức SMB/CIFS và ánh xạ từ máy trạm.
 
 ---
 
-## 1. Cấu hình Samba Share trên máy chủ DC01
+## 1. Cấu hình chia sẻ trong `/etc/samba/smb.conf` (Trang 20)
 
-Mở file cấu hình `/etc/samba/smb.conf`:
-```bash
-sudo nano /etc/samba/smb.conf
-```
-
-Thêm khối chia sẻ vào cuối file:
+Thêm khối cấu hình vào cuối file `/etc/samba/smb.conf`:
 
 ```ini
-[share]
+[share]                                        # <--- THAY ĐỔI: Tên thư mục chia sẻ hiển thị qua mạng
    comment = Thu muc chia se chung cho GV va SV
-   path = /srv/share
-   read only = no
+   path = /srv/share                           # <--- THAY ĐỔI: Đường dẫn thư mục cục bộ chia sẻ
+   read only = no                              # <--- THAY ĐỔI: no là cho phép ghi, yes là chỉ cho đọc
    browsable = yes
-   guest ok = yes
+   guest ok = yes                              # <--- THAY ĐỔI: yes là cho phép khách truy cập không cần pass
    create mask = 0775
    directory mask = 0775
 ```
 
-Khởi động lại dịch vụ Samba AD DC:
+### Khởi động lại dịch vụ Samba Daemon (Trang 20)
 ```bash
+# Trên máy chủ Samba AD DC
 sudo systemctl restart samba-ad-dc
+
+# (Hoặc nếu là máy chủ Samba độc lập)
+sudo systemctl restart smbd
+sudo systemctl restart nmbd
 ```
 
 ---
 
-## 2. Ánh xạ thư mục mạng từ máy trạm Windows Client1
+## 2. Ánh xạ (Mount) trên máy trạm Linux (Trang 20)
 
-### Cách 1: Truy cập trực tiếp qua đường dẫn UNC
-1. Nhấn tổ hợp phím `Win + R`.
-2. Nhập đường dẫn: `\\10.0.0.2\share` và nhấn Enter.
-3. Nếu yêu cầu xác thực, nhập tài khoản domain:
-   * User: `dhcnhn\gv1` (hoặc `dhcnhn\administrator`)
-   * Password: `Giangvien1` (hoặc `Dhcnhn1`)
-
-### Cách 2: Gắn ổ đĩa mạng cố định (Map Network Drive)
-1. Mở **File Explorer** $\rightarrow$ chọn **This PC**.
-2. Trên thanh công cụ, chọn **Map network drive**.
-3. Chọn tên ổ đĩa (ví dụ: `Z:`).
-4. Tại ô **Folder**, điền: `\\10.0.0.2\share`.
-5. Tích chọn **Connect using different credentials** (nếu cần đổi user) $\rightarrow$ bấm **Finish**.
-
----
-
-## 3. Ánh xạ (Mount) thư mục mạng từ máy trạm Linux Client2
-
-### Bước 1: Tạo thư mục điểm gắn kết (Mount point)
 ```bash
-sudo mkdir -p /mnt/share
-```
+# Tạo thư mục điểm gắn kết
+sudo mkdir -p /mnt/share                       # <--- THAY ĐỔI: Đường dẫn thư mục mount trên máy trạm
 
-### Bước 2: Thực hiện lệnh mount CIFS
-```bash
-# Mount với quyền administrator
-sudo mount -t cifs //10.0.0.2/share /mnt/share -o user=administrator,pass=Dhcnhn1
+# Gắn kết (Mount) thư mục mạng bằng tài khoản quản trị
+sudo mount //10.0.0.2/share /mnt/share -o user=administrator,pass=Dhcnhn1   # <--- THAY ĐỔI: IP, tên share, user và pass
 
-# Hoặc mount với tài khoản giảng viên gv1
-sudo mount -t cifs //10.0.0.2/share /mnt/share -o user=gv1,pass=Giangvien1,domain=dhcnhn.com
-```
-
-### Bước 3: Kiểm tra nội dung sau khi mount
-```bash
+# Kiểm tra thư mục sau khi mount
 ls -la /mnt/share
 df -h | grep share
+
+# Hủy gắn kết (Umount - Trang 20)
+sudo umount //10.0.0.2/share -vA
 ```
 
-### Bước 4: Hủy gắn kết (Umount) khi không sử dụng
-```bash
-sudo umount /mnt/share
-```
+---
+
+## 3. Ánh xạ trên máy trạm Windows Client1
+* **Truy cập nhanh:** Nhấn `Win + R` $\rightarrow$ gõ: `\\10.0.0.2\share` *(<--- THAY ĐỔI: IP máy chủ và tên share)*.
+* **Map Network Drive:** Vào **This PC** $\rightarrow$ chọn **Map network drive** $\rightarrow$ chọn ổ `Z:` $\rightarrow$ Folder: `\\10.0.0.2\share`.

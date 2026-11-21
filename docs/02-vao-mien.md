@@ -4,67 +4,46 @@ Hướng dẫn cấu hình máy trạm Windows Client1 và Linux Client2 gia nh�
 
 ---
 
-## 1. Điều kiện tiên quyết
-* Cả hai máy trạm phải ping thông tới máy chủ DC01 (`10.0.0.2`).
-* Máy trạm bắt buộc phải trỏ DNS Server chính về địa chỉ IP của DC01: `10.0.0.2`.
+## 1. Kiểm tra kết nối trước khi vào miền
+* Cả hai máy trạm bắt buộc phải trỏ DNS chính về IP của máy chủ DC01: `10.0.0.2`.
 * Kiểm tra phân giải tên miền:
   ```bash
-  ping dhcnhn.com
+  ping dhcnhn.com             # <--- THAY ĐỔI: Tên miền theo yêu cầu đề bài
   ```
-  Kết quả phải trả về phản hồi từ IP `10.0.0.2`.
+  Kết quả phải trả về phản hồi từ IP `10.0.0.2` (DC01).
 
 ---
 
 ## 2. Máy trạm Windows Client1 tham gia miền
-1. Nhấn tổ hợp phím `Win + R`, nhập `sysdm.cpl` và nhấn Enter.
+1. Nhấn `Win + R`, nhập `sysdm.cpl` và nhấn Enter.
 2. Tại tab **Computer Name**, chọn nút **Change...**
-3. Tại mục **Member of**, tích chọn **Domain**, nhập: `dhcnhn.com`.
+3. Tại mục **Member of**, tích chọn **Domain**, nhập: `dhcnhn.com` *(<--- THAY ĐỔI: Tên miền theo đề)*.
 4. Nhập thông tin tài khoản quản trị miền:
    * Username: `administrator` (hoặc `dhcnhn\administrator`)
-   * Password: `Dhcnhn1`
-5. Nhận thông báo chào mừng vào miền, bấm **OK** và khởi động lại máy tính.
-6. Đăng nhập vào máy tính bằng tài khoản domain (ví dụ: `dhcnhn\gv1`).
+   * Password: `Dhcnhn1` *(<--- THAY ĐỔI: Mật khẩu quản trị DC)*
+5. Khởi động lại máy tính $\rightarrow$ Đăng nhập bằng tài khoản miền: `dhcnhn\gv1`.
 
 ---
 
-## 3. Máy trạm Linux Client2 (Ubuntu Desktop) tham gia miền
+## 3. Máy trạm Linux Client2 (Ubuntu Desktop) tham gia miền (Trang 9)
 
-### Bước 1: Cài đặt các gói công cụ cần thiết
 ```bash
+# 1. Cài đặt các gói phần mềm
 sudo apt update
 sudo apt install -y sssd sssd-tools realmd adcli
-```
 
-### Bước 2: Bật PAM tự động tạo thư mục home khi đăng nhập lần đầu
-Mở file `/etc/pam.d/common-session` và thêm dòng sau vào cuối file:
-```text
-session optional pam_mkhomedir.so skel=/etc/skel umask=0077
-```
-*(Có thể chạy lệnh nhanh: `echo "session optional pam_mkhomedir.so skel=/etc/skel umask=0077" | sudo tee -a /etc/pam.d/common-session`)*
+# 2. Bật PAM tự động tạo thư mục home khi người dùng miền đăng nhập lần đầu
+echo "session optional pam_mkhomedir.so skel=/etc/skel umask=0077" | sudo tee -a /etc/pam.d/common-session
 
-### Bước 3: Cho phép người dùng miền đăng nhập
-Mở file `/etc/security/group.conf` và thêm dòng:
-```text
-* ; * ; * ; Al0000-2400 ; domain users
-```
+# 3. Cho phép người dùng miền đăng nhập trong /etc/security/group.conf
+echo "* ; * ; * ; Al0000-2400 ; domain users" | sudo tee -a /etc/security/group.conf
 
-### Bước 4: Thực hiện lệnh gia nhập miền
-```bash
-# Quét thông tin miền
-sudo realm discover dhcnhn.com
+# 4. Quét và tham gia miền
+sudo realm discover dhcnhn.com                          # <--- THAY ĐỔI: Tên miền cần quét
+sudo realm -v join dhcnhn.com -U administrator          # <--- THAY ĐỔI: Tên miền và user quản trị
 
-# Tham gia miền với quyền administrator (mật khẩu: Dhcnhn1)
-sudo realm -v join dhcnhn.com -U administrator
-```
-
-### Bước 5: Kiểm tra kết quả
-```bash
-# Xem thông tin miền đã gia nhập
+# 5. Kiểm tra kết quả
 realm list
-
-# Kiểm tra nhận diện tài khoản từ miền
-id gv1@dhcnhn.com
-
-# Đăng nhập thử sang tài khoản miền
+id gv1@dhcnhn.com                                       # <--- THAY ĐỔI: Tên user kiểm tra
 su - gv1@dhcnhn.com
 ```

@@ -1,65 +1,68 @@
 # 04. Dịch Vụ Phân Giải Tên Miền (DNS)
 
-Hướng dẫn cấu hình vùng phân giải xuôi, vùng phân giải ngược và các bản ghi DNS bằng công cụ `samba-tool dns` và BIND9.
+Tài liệu chi tiết theo nguyên mẫu giáo trình trang 10 và 11 về quản trị DNS bằng `samba-tool` và gói phần mềm BIND9.
 
 ---
 
-## 1. Quản trị DNS bằng dòng lệnh `samba-tool dns`
+## 1. Quản trị DNS bằng dòng lệnh `samba-tool dns` (Trang 10 & 13)
 
 Thực hiện trên máy chủ điều khiển miền `dc01.dhcnhn.com`:
 
-### 1.1. Tạo vùng tra cứu xuôi và ngược
 ```bash
-# Tạo vùng tra cứu xuôi mới (nếu cần tạo thêm domain riêng)
-samba-tool dns zonecreate dc01.dhcnhn.com googlehaui.com -U administrator
+# 1. Tạo vùng tra cứu xuôi và ngược
+samba-tool dns zonecreate dc01.dhcnhn.com googlehaui.com -U administrator   # <--- THAY ĐỔI: Tên zone xuôi cần tạo
+samba-tool dns zonecreate dc01.dhcnhn.com 10.in-addr.arpa -U administrator  # <--- THAY ĐỔI: Tên zone ngược (dải 10.0.0.0/8 đảo thành 10.in-addr.arpa)
 
-# Tạo vùng tra cứu ngược cho mạng 10.0.0.0/8
-samba-tool dns zonecreate dc01.dhcnhn.com 10.in-addr.arpa -U administrator
-```
+# 2. Thêm bản ghi A (xuôi) và PTR (ngược)
+samba-tool dns add dc01.dhcnhn.com googlehaui.com www A 10.0.0.2 -U administrator         # <--- THAY ĐỔI: Tên bản ghi và IP
+samba-tool dns add dc01.dhcnhn.com 10.in-addr.arpa 2.0.0 PTR www.googlehaui.com -U administrator # <--- THAY ĐỔI: 10.0.0.2 đảo thành 2.0.0
 
-### 1.2. Thêm các bản ghi DNS
-```bash
-# Thêm bản ghi A (Phân giải tên miền ra IP)
-samba-tool dns add dc01.dhcnhn.com dhcnhn.com www A 10.0.0.2 -U administrator
-samba-tool dns add dc01.dhcnhn.com dhcnhn.com mail A 10.0.0.4 -U administrator
+# 3. Cập nhật và Xóa bản ghi
+samba-tool dns update dc01.dhcnhn.com googlehaui.com www A 10.0.0.2 10.0.0.11 -U administrator # <--- Cập nhật IP cũ sang mới
+samba-tool dns delete dc01.dhcnhn.com googlehaui.com www A 10.0.0.2 -U administrator           # <--- Xóa bản ghi
 
-# Thêm bản ghi PTR (Phân giải ngược IP ra tên miền)
-# Lưu ý: Với mạng 10.0.0.0/8, địa chỉ 10.0.0.2 đảo thành 2.0.0
-samba-tool dns add dc01.dhcnhn.com 10.in-addr.arpa 2.0.0 PTR dc01.dhcnhn.com -U administrator
-```
-
-### 1.3. Cập nhật và Xóa bản ghi
-```bash
-# Cập nhật địa chỉ IP cho bản ghi www
-samba-tool dns update dc01.dhcnhn.com dhcnhn.com www A 10.0.0.2 10.0.0.11 -U administrator
-
-# Xóa bản ghi www
-samba-tool dns delete dc01.dhcnhn.com dhcnhn.com www A 10.0.0.2 -U administrator
-```
-
-### 1.4. Liệt kê và kiểm tra bản ghi
-```bash
-# Xem danh sách các zone đang quản lý
+# 4. Liệt kê và Kiểm tra
 samba-tool dns zonelist dc01.dhcnhn.com -U administrator
-
-# Xem tất cả bản ghi trong zone dhcnhn.com
-samba-tool dns query dc01.dhcnhn.com dhcnhn.com @ ALL -U administrator
-
-# Xem các bản ghi trong zone ngược
-samba-tool dns query dc01.dhcnhn.com 10.in-addr.arpa @ ALL -U administrator
+samba-tool dns zoneinfo dc01.dhcnhn.com googlehaui.com -U administrator
+samba-tool dns query dc01.dhcnhn.com googlehaui.com @ ALL -U administrator
 ```
 
 ---
 
-## 2. Kiểm tra phân giải tên miền từ máy trạm (Client)
-Sử dụng các công cụ tiêu chuẩn:
-```bash
-# Kiểm tra phân giải xuôi
-nslookup www.dhcnhn.com
-host www.dhcnhn.com
-dig www.dhcnhn.com
+## 2. Quản trị DNS sử dụng gói BIND9 (Nguyên mẫu Trang 11)
 
-# Kiểm tra phân giải ngược
-nslookup 10.0.0.2
-host 10.0.0.2
+### 2.1. Cài đặt và quản lý dịch vụ
+```bash
+sudo apt install bind9 dnsutils -y
+dpkg -l bind9
+sudo systemctl restart bind9
+sudo systemctl status bind9
+```
+
+### 2.2. Khai báo vùng trong `/etc/bind/named.conf.local`
+```text
+zone "dhcnhn.com" {                           # <--- THAY ĐỔI: Tên vùng xuôi
+    type master;
+    file "/etc/bind/forward.dhcnhn.com";
+};
+
+zone "10.in-addr.arpa" {                      # <--- THAY ĐỔI: Tên vùng ngược
+    type master;
+    file "/etc/bind/reverse.dhcnhn.com";
+};
+```
+
+### 2.3. Kiểm tra cú pháp cấu hình BIND9 (Trang 12)
+```bash
+named-checkconf /etc/bind/named.conf
+named-checkzone dhcnhn.com /etc/bind/forward.dhcnhn.com
+```
+
+---
+
+## 3. Lệnh kiểm tra phân giải tên miền từ máy trạm
+```bash
+nslookup www.googlehaui.com
+host www.googlehaui.com
+dig www.googlehaui.com
 ```

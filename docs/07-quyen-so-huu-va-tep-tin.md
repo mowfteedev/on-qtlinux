@@ -1,20 +1,24 @@
 # 07. Quyền Sở Hữu Và Quyền Truy Cập Tập Tin, Thư Mục
 
-Hướng dẫn thiết lập quyền truy cập tiêu chuẩn Linux (`chmod`), quyền sở hữu (`chown`) và quyền nâng cao POSIX ACL (`setfacl`).
+Tài liệu chi tiết theo nguyên mẫu giáo trình trang 18-20 về phân quyền bằng chữ cái, phân quyền bằng số octal, thay đổi chủ sở hữu và POSIX ACL.
 
 ---
 
-## 1. Nguyên lý phân quyền Linux Standard
-* **Chủ sở hữu (Owner / User):** `u`
-* **Nhóm sở hữu (Group):** `g`
-* **Người dùng khác (Others):** `o`
-* **Giá trị số (Octal):** `r` (read) = 4, `w` (write) = 2, `x` (execute) = 1.
+## 1. Cú pháp chmod bằng chữ cái (Trang 19)
+* **Đối tượng:** `u` (owner), `g` (group), `o` (other), `a` (all).
+* **Quyền:** `r` (read), `w` (write), `x` (execute).
+* **Toán tử:** `+` (thêm quyền), `-` (xóa quyền), `=` (gán cố định quyền).
+
+```bash
+chmod u+x file1             # Thêm quyền thực thi cho chủ sở hữu
+chmod o+wx file2            # Thêm quyền ghi và thực thi cho người dùng khác
+chmod g-r file3             # Xóa quyền đọc của nhóm
+chmod ugo+rwx file4         # Gán quyền đọc, ghi, thực thi cho tất cả mọi người
+```
 
 ---
 
-## 2. Ma trận phân quyền chi tiết tại `/srv/share`
-
-Theo yêu cầu chuẩn bài thực hành:
+## 2. Ma trận phân quyền bằng số Octal tại `/srv/share` (Trang 20)
 
 | Đường dẫn đối tượng | Quyền Owner | Quyền Group | Quyền Others | Ký hiệu symbolic | Mã số Octal |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -25,42 +29,46 @@ Theo yêu cầu chuẩn bài thực hành:
 
 ### Lệnh thực thi:
 ```bash
-# 1. Tạo cây thư mục và tập tin
+# Tạo thư mục và file
 sudo mkdir -p /srv/share/{gv,sv}
 sudo touch /srv/share/gv/gv.txt /srv/share/sv/sv.txt
 
-# 2. Áp dụng quyền
-sudo chmod 765 /srv/share
-sudo chmod 750 /srv/share/gv
-sudo chmod -R 671 /srv/share/sv        # Cờ -R áp dụng đệ quy cho cả thư mục con
-sudo chmod 755 /srv/share/gv/gv.txt
+# Áp dụng quyền
+sudo chmod 765 /srv/share                      # <--- THAY ĐỔI: Mã số octal tính từ ma trận quyền của đề
+sudo chmod 750 /srv/share/gv                   # <--- THAY ĐỔI: Mã số octal tính từ ma trận quyền của đề
+sudo chmod -R 671 /srv/share/sv                # <--- THAY ĐỔI: Cờ -R bắt buộc khi đề yêu cầu áp dụng cả thư mục con
+sudo chmod 755 /srv/share/gv/gv.txt            # <--- THAY ĐỔI: Mã số octal tính từ ma trận quyền của đề
 ```
 
 ---
 
-## 3. Gán quyền sở hữu người dùng và nhóm (`chown`)
-```bash
-# Gán gv1 và nhóm Giangvien sở hữu thư mục gv
-sudo chown -R gv1:Giangvien /srv/share/gv
+## 3. Thay đổi người sở hữu và nhóm (`chown` / `chgrp` - Trang 19)
 
-# Gán sv1 và nhóm Sinhvien sở hữu thư mục sv
+```bash
+# Đổi chủ sở hữu và nhóm người dùng cục bộ
+sudo chown gv1 /srv/share/gv                   # <--- THAY ĐỔI: Đổi user sở hữu
+sudo chgrp Giangvien /srv/share/gv             # <--- THAY ĐỔI: Đổi group sở hữu
+sudo chown -R gv1:Giangvien /srv/share/gv      # <--- THAY ĐỔI: Đổi cả user và group đệ quy
 sudo chown -R sv1:Sinhvien /srv/share/sv
+
+# Đổi chủ sở hữu cho tài khoản Active Directory (Trang 19)
+sudo chown administrator:"domain users" /srv/share
+sudo chown dhcnhn\\administrator:"dhcnhn\domain users" /srv/share
 ```
 
 ---
 
-## 4. Phân quyền nâng cao bằng POSIX ACL (`setfacl` / `getfacl`)
-Sử dụng khi cần cấp quyền cho nhiều nhóm khác nhau trên cùng một thư mục:
+## 4. Quản lý phân quyền nâng cao bằng POSIX ACL (Trang 19)
 
 ```bash
-# Xem quyền ACL hiện tại
+# Xem quyền ACL của thư mục
 getfacl /srv/share
 
-# Cấp quyền đọc, ghi, thực thi cho nhóm Sinhvien
-sudo setfacl -m g:Sinhvien:rwx /srv/share
+# Gán quyền rwx cho nhóm Sinhvien vào thư mục /srv/share
+sudo setfacl -m g:Sinhvien:rwx /srv/share      # <--- THAY ĐỔI: Tên nhóm và quyền cần cấp
 
-# Xóa quyền ACL của nhóm Sinhvien
-sudo setfacl -x g:Sinhvien /srv/share
+# Xóa quyền ACL của nhóm Sinhvien khỏi thư mục
+sudo setfacl -x g:Sinhvien /srv/share          # <--- THAY ĐỔI: Tên nhóm cần thu hồi quyền
 ```
 
 ---
