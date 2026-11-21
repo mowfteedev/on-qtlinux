@@ -1,25 +1,18 @@
-# ĐỀ THI SỐ 02 (MÃ ĐỀ: 3) - ĐỀ KIỂM TRA THƯỜNG XUYÊN 2
-
-> **Học phần:** Quản trị hệ thống trên nền tảng Linux (FE6092) - HaUI  
-> **Hình thức:** Thực hành trên máy ảo (10 điểm)
-
----
-
-## 1. ĐỀ BÀI CHI TIẾT
+# MÃ ĐỀ: 3
 
 Quản trị lớp học MMT và TTDL của Trường ĐHCNHN dựa trên HĐH Linux với đặc điểm và yêu cầu như sau:
 
-### Phần 1: Client tham gia miền và Quản trị tài khoản người dùng/nhóm trong miền (4 điểm)
+### Client tham gia miền và Quản trị tài khoản người dùng/nhóm trong miền (4 điểm)
 1. Cấu hình giao diện mạng cho Linux Client và đưa Client này tham gia miền của máy chủ điều khiển miền (3 điểm).
 2. Tạo nhóm giảng viên (`gv`) và sinh viên (`sv`) được chứa các tài khoản trong miền (1 điểm):
    * `gv1` – `Giangvien1`; `gv2` – `Giangvien2`
    * `sv1` – `Sinhvien1`; `sv2` – `Sinhvien2`
 
-### Phần 2: Dịch vụ DNS (3 điểm)
+### Dịch vụ DNS (3 điểm)
 1. Tạo vùng tra cứu chuyển tiếp cho vùng DNS: `googlehaui.com`, `youtubehaui.com`, `facebookhaui.com` (2 điểm); Bản ghi loại A cho đối với từng vùng DNS: `www` $\rightarrow$ `10.0.0.2`.
 2. Tạo vùng tra cứu ngược cho các vùng DNS nói trên (1 điểm).
 
-### Phần 3: Máy chủ Web (3 điểm)
+### Máy chủ Web (3 điểm)
 1. Máy chủ cung cấp dịch vụ Web trên cổng dịch vụ 80 với các tên miền sau:
    * `googlehaui.com` (Bí danh: `www.googlehaui.com`)
    * `youtubehaui.com` (Bí danh: `www.youtubehaui.com`)

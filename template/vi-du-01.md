@@ -1,28 +1,21 @@
-# ĐỀ THI SỐ 01 (MÃ ĐỀ: 4) - ĐỀ KIỂM TRA THƯỜNG XUYÊN 2
-
-> **Học phần:** Quản trị hệ thống trên nền tảng Linux (FE6092) - HaUI  
-> **Hình thức:** Thực hành trên máy ảo (10 điểm)
-
----
-
-## 1. ĐỀ BÀI CHI TIẾT
+# MÃ ĐỀ: 4
 
 Quản trị lớp học MMT và TTDL của Trường ĐHCNHN dựa trên HĐH Linux với đặc điểm và yêu cầu như sau:
 
-### Phần 1: Client tham gia miền và Quản trị tài khoản người dùng/nhóm trong miền (4 điểm)
+### Client tham gia miền và Quản trị tài khoản người dùng/nhóm trong miền (4 điểm)
 1. Cấu hình giao diện mạng cho Linux Client và đưa Client này tham gia miền của máy chủ điều khiển miền (3 điểm).
 2. Tạo nhóm giảng viên (`gv`) và sinh viên (`sv`) được chứa các tài khoản trong miền (1 điểm):
    * `gv1` – `Giangvien1`; `gv2` – `Giangvien2`
    * `sv1` – `Sinhvien1`; `sv2` – `Sinhvien2`
 
-### Phần 2: Dịch vụ DHCP (3 điểm)
+### Dịch vụ DHCP (3 điểm)
 1. Cấu hình mạng chung khi cấp tự động:
    * Gateway: `10.0.0.254`; Domain name: `dhcnhn.com`; Domain name servers: `10.0.0.2`
    * Thời gian thuê mặc định: 15 phút (`900` giây); Thời gian thuê tối đa: 1,1 ngày (`95040` giây)
 2. Client được cấp địa chỉ IP tự động trong dải: `10.0.0.100/8` – `10.0.0.200/8`.
 3. Từ chối cấp tự động cấu hình mạng cho Client với địa chỉ MAC `22:22:22:22:22:22`.
 
-### Phần 3: Quản trị tập tin/thư mục (3 điểm)
+### Quản trị tập tin/thư mục (3 điểm)
 1. Mỗi nhóm giảng viên và nhóm sinh viên được cấp các tài khoản lưu trữ cục bộ:
    * `gv1` – `Giangvien1`; `gv2` – `Giangvien2`; `sv1` – `Sinhvien1`; `sv2` – `Sinhvien2`
 2. Tạo thư mục dùng chung (`share`) tại đường dẫn `/srv/` chứa thư mục của giảng viên (`GV`) và sinh viên (`SV`) trên máy chủ điều khiển miền.
