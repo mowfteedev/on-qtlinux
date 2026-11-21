@@ -44,14 +44,24 @@ sudo chmod 755 /srv/share/gv/gv.txt            # <--- THAY ĐỔI: Mã số octa
 
 ## 3. Thay đổi người sở hữu và nhóm (`chown` / `chgrp` - Trang 19)
 
+### 3.1. Dạng đề thi thực tế: Giảng viên 1 và Sinh viên 1 sở hữu thư mục
+Khi đề bài yêu cầu: *"Giảng viên 1 và sinh viên 1 lần lượt sở hữu thư mục của GV và SV; Nhóm gv và sv lần lượt có quyền đối với thư mục của GV và SV"*:
 ```bash
-# Đổi chủ sở hữu và nhóm người dùng cục bộ
-sudo chown gv1 /srv/share/gv                   # <--- THAY ĐỔI: Đổi user sở hữu
-sudo chgrp Giangvien /srv/share/gv             # <--- THAY ĐỔI: Đổi group sở hữu
-sudo chown -R gv1:Giangvien /srv/share/gv      # <--- THAY ĐỔI: Đổi cả user và group đệ quy
-sudo chown -R sv1:Sinhvien /srv/share/sv
+# Tạo thư mục GV và SV trong /srv/share
+sudo mkdir -p /srv/share/{GV,SV}
+sudo touch /srv/share/GV/gv.txt /srv/share/SV/sv.txt
 
-# Đổi chủ sở hữu cho tài khoản Active Directory (Trang 19)
+# Giảng viên 1 sở hữu, nhóm gv có quyền (rwx)
+sudo chown -R gv1:gv /srv/share/GV
+sudo chmod 770 /srv/share/GV
+
+# Sinh viên 1 sở hữu, nhóm sv có quyền (rwx)
+sudo chown -R sv1:sv /srv/share/SV
+sudo chmod 770 /srv/share/SV
+```
+
+### 3.2. Đổi chủ sở hữu cho tài khoản Active Directory (Trang 19)
+```bash
 sudo chown administrator:"domain users" /srv/share
 sudo chown dhcnhn\\administrator:"dhcnhn\domain users" /srv/share
 ```

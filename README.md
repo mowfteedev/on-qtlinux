@@ -32,11 +32,11 @@ Tài liệu ôn tập thực hành môn Quản trị Linux, bám sát các nội
 
 ---
 
-## Đề Thi Mẫu & Ví Dụ Thực Hành
+## Đề Thi Thực Tế & Lời Giải Chi Tiết
 
-* [template/vi-du-01.md](template/vi-du-01.md): Ví dụ 1 - Mạng Netplan, tài khoản Samba AD và phân quyền tập tin.
-* [template/vi-du-02.md](template/vi-du-02.md): Ví dụ 2 - Dịch vụ DHCP Server và Apache2 Virtual Hosts.
-* [template/vi-du-03.md](template/vi-du-03.md): Ví dụ 3 - Tổng hợp Samba AD, DNS Record, DHCP Filter và POSIX ACL.
+* [template/vi-du-01.md](template/vi-du-01.md): **Đề thi số 01 (Mã đề 4)** - Client Join Domain, DHCP dải 100-200 + deny MAC, Phân quyền thư mục `/srv/share/{GV,SV}`.
+* [template/vi-du-02.md](template/vi-du-02.md): **Đề thi số 02 (Mã đề 3)** - Client Join Domain, DNS 3 zone xuôi/ngược, Apache Virtual Hosts kèm 2 thư mục con `en` và `vn`.
+* [template/vi-du-03.md](template/vi-du-03.md): Đề thi tổng hợp nâng cao tham khảo thêm (DHCP Filter + POSIX ACL).
 
 ---
 

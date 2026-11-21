@@ -14,8 +14,10 @@ sudo systemctl status apache2
 ---
 
 ## 2. Tạo DocumentRoot và mã nguồn Website (Trang 15 & 17)
+### 2.1. Cấu trúc cơ bản
+Tạo thư mục lưu trữ mã nguồn cho 3 website: `googlehaui.com`, `youtubehaui.com`, `facebookhaui.com`:
+
 ```bash
-# Tạo thư mục chứa web và phân quyền
 for site in googlehaui youtubehaui facebookhaui; do
     sudo mkdir -p /var/www/${site}.com                                            # <--- THAY ĐỔI: Tên thư mục web
     echo "<h1>Welcome to ${site}.com</h1>" | sudo tee /var/www/${site}.com/index.html
@@ -23,6 +25,27 @@ for site in googlehaui youtubehaui facebookhaui; do
     sudo chmod -R 755 /var/www/${site}.com
 done
 ```
+
+### 2.2. Dạng đề thi nâng cao: Tạo thêm thư mục con `en` và `vn`
+Khi đề bài yêu cầu: *"Tạo 2 thư mục con en và vn trong đường dẫn mã nguồn Web và hiển thị tất cả trên trình duyệt"*:
+```bash
+for site in googlehaui youtubehaui; do
+    # Tạo thư mục gốc và 2 thư mục con
+    sudo mkdir -p /var/www/${site}.com/{en,vn}
+    
+    # Tạo nội dung cho từng thư mục
+    echo "<h1>Trang chu ${site}.com</h1>" | sudo tee /var/www/${site}.com/index.html
+    echo "<h1>English Version of ${site}.com</h1>" | sudo tee /var/www/${site}.com/en/index.html
+    echo "<h1>Phien ban Tieng Viet ${site}.com</h1>" | sudo tee /var/www/${site}.com/vn/index.html
+    
+    sudo chown -R www-data:www-data /var/www/${site}.com
+    sudo chmod -R 755 /var/www/${site}.com
+done
+```
+* **Cách truy cập từ Client:**
+  - Trang chủ: `http://www.googlehaui.com`
+  - Trang tiếng Anh: `http://www.googlehaui.com/en`
+  - Trang tiếng Việt: `http://www.googlehaui.com/vn`
 
 ---
 

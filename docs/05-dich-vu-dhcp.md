@@ -21,8 +21,11 @@ sudo sed -i 's/INTERFACESv4=.*/INTERFACESv4="ens33"/' /etc/default/isc-dhcp-serv
 Thêm cấu hình vào cuối file `/etc/dhcp/dhcpd.conf`:
 
 ```text
-default-lease-time 300;                       # <--- THAY ĐỔI: Thời gian thuê mặc định (giây)
-max-lease-time 86400;                         # <--- THAY ĐỔI: Thời gian thuê tối đa (giây)
+# Quy đổi thời gian thuê thường gặp trong đề thi:
+# 15 phút = 15 * 60 = 900 giây (mặc định)
+# 1,1 ngày = 1.1 * 86400 = 95040 giây (tối đa)
+default-lease-time 900;                       # <--- THAY ĐỔI: Thời gian thuê mặc định (giây)
+max-lease-time 95040;                         # <--- THAY ĐỔI: Thời gian thuê tối đa (giây)
 authoritative;
 
 subnet 10.0.0.0 netmask 255.0.0.0 {           # <--- THAY ĐỔI: Địa chỉ mạng và subnet mask
