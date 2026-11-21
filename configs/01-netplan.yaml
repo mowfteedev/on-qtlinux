@@ -1,0 +1,15 @@
+# File: /etc/netplan/01-netcfg.yaml
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ens33:
+      dhcp4: false
+      addresses:
+        - 10.0.0.2/8
+      routes:
+        - to: default
+          via: 10.0.0.254
+      nameservers:
+        addresses: [10.0.0.2, 8.8.8.8]
+        search: [dhcnhn.com]
