@@ -34,9 +34,9 @@ Tài liệu ôn tập thực hành môn Quản trị Linux, bám sát các nội
 
 ## Đề Thi Thực Tế & Lời Giải Chi Tiết
 
-* [template/vi-du-01.md](template/vi-du-01.md): **Đề thi số 01 (Mã đề 4)** - Client Join Domain, DHCP dải 100-200 + deny MAC, Phân quyền thư mục `/srv/share/{GV,SV}`.
-* [template/vi-du-02.md](template/vi-du-02.md): **Đề thi số 02 (Mã đề 3)** - Client Join Domain, DNS 3 zone xuôi/ngược, Apache Virtual Hosts kèm 2 thư mục con `en` và `vn`.
-* [template/vi-du-03.md](template/vi-du-03.md): Đề thi tổng hợp nâng cao tham khảo thêm (DHCP Filter + POSIX ACL).
+* [template/vi-du-01.md](template/vi-du-01.md): **Đề thi số 01 (MÃ ĐỀ 4)** - Linux Client Join Domain, DHCP dải 100-200 + chặn MAC, Phân quyền thư mục `/srv/share/{GV,SV}`.
+* [template/vi-du-02.md](template/vi-du-02.md): **Đề thi số 02 (MÃ ĐỀ 3)** - Linux Client Join Domain, DNS 3 Zone xuôi/ngược, Apache Virtual Hosts kèm 2 thư mục con `en` và `vn`.
+* [template/vi-du-03.md](template/vi-du-03.md): **Đề thi số 03 (MÃ ĐỀ 2)** - Linux Client Join Domain, DHCP dải 10-100 + gán cố định IP `10.0.0.5` cho MAC `11:11:11:11:11:11`, Ma trận phân quyền `chmod 765 / 750 / -R 671 / 755`.
 
 ---
 

@@ -1,106 +1,171 @@
-# Ví Dụ 03: Tổng Hợp Samba AD DC, DNS Record, DHCP Filter Và ACL
+# ĐỀ THI SỐ 03 (MÃ ĐỀ: 2) - ĐỀ KIỂM TRA THƯỜNG XUYÊN 2
+
+> **Học phần:** Quản trị hệ thống trên nền tảng Linux (FE6092) - HaUI  
+> **Hình thức:** Thực hành trên máy ảo (10 điểm)
 
 ---
 
-## 1. ĐỀ BÀI
+## 1. ĐỀ BÀI CHI TIẾT
 
-### Câu 1: Quản trị Active Directory bằng `samba-tool` (3.0 điểm)
-1. Tạo 2 tài khoản sinh viên: `sv1` (Pass: `Sinhvien1`), `sv2` (Pass: `Sinhvien2`).
-2. Tạo 2 tài khoản giảng viên: `gv1` (Pass: `Giangvien1`), `gv2` (Pass: `Giangvien2`).
-3. Tạo nhóm `Giangvien` chứa `gv1, gv2` và nhóm `Sinhvien` chứa `sv1, sv2`.
-4. Liệt kê các thành viên trong từng nhóm để nghiệm thu.
+Quản trị lớp học MMT và TTDL của Trường ĐHCNHN dựa trên HĐH Linux với đặc điểm và yêu cầu như sau:
 
-### Câu 2: Quản trị dịch vụ DNS bằng `samba-tool dns` (3.0 điểm)
-Thực hiện cấu hình DNS trên máy chủ điều khiển miền `dc01.dhcnhn.com`:
-1. Tạo vùng tra cứu ngược: `10.in-addr.arpa`.
-2. Tạo bản ghi **A**: `www` trỏ về IP `10.0.0.3`, `mail` trỏ về IP `10.0.0.4`.
-3. Tạo bản ghi phân giải ngược **PTR** cho địa chỉ `10.0.0.2` trỏ về `dc01.dhcnhn.com`.
-4. Dùng lệnh `samba-tool dns query` để kiểm tra các bản ghi vừa tạo.
+### Phần 1: Client tham gia miền và Quản trị tài khoản người dùng/nhóm trong miền (4 điểm)
+1. Cấu hình giao diện mạng cho Linux Client và đưa Client này tham gia miền của máy chủ điều khiển miền (3 điểm).
+2. Tạo nhóm giảng viên (`gv`) và sinh viên (`sv`) được chứa các tài khoản trong miền (1 điểm):
+   * `gv1` – `Giangvien1`; `gv2` – `Giangvien2`
+   * `sv1` – `Sinhvien1`; `sv2` – `Sinhvien2`
 
-### Câu 3: DHCP Server có Bộ lọc và Phân quyền Nâng cao ACL (4.0 điểm)
-1. Cấu hình DHCP cấp động dải `10.0.0.10` – `10.0.0.50`. Cấu hình từ chối cấp IP tự động (`deny booting;`) cho máy có MAC `22:22:22:22:22:22`.
-2. Tạo thư mục `/srv/share` và gán quyền cơ bản `chmod 775 /srv/share`.
-3. Sử dụng công cụ POSIX ACL (`setfacl`):
-   * Cấp toàn quyền (`rwx`) cho nhóm `Giangvien` trên `/srv/share`.
-   * Cấp quyền chỉ đọc và thực thi (`r-x`) cho nhóm `Sinhvien` trên `/srv/share`.
-4. Kiểm tra cấu hình ACL bằng lệnh `getfacl`.
+### Phần 2: Dịch vụ DHCP (3 điểm)
+1. Cấu hình mạng chung khi cấp tự động:
+   * Gateway: `10.0.0.254`; Domain name: `dhcnhn.com`; Domain name servers: `10.0.0.2`
+   * Thời gian thuê mặc định: 5 phút (`300` giây); Thời gian thuê tối đa: 1,5 ngày (`129600` giây)
+2. Client được cấp địa chỉ IP tự động trong dải: `10.0.0.10/8` – `10.0.0.100/8`.
+3. Cấu hình mạng dành riêng cho Client với địa chỉ MAC `11:11:11:11:11:11` với địa chỉ IP: `10.0.0.5`.
+
+### Phần 3: Quản trị tập tin/thư mục (3 điểm)
+1. Tạo thư mục dùng chung (`share`) tại đường dẫn `/srv/` chứa thư mục của giảng viên (`GV`) và sinh viên (`SV`) trên máy chủ điều khiển miền.
+2. Tạo tập tin `gv.txt` và `sv.txt` lần lượt trong thư mục của giảng viên và sinh viên.
+3. Phân quyền truy cập chính xác:
+   * Đối với thư mục `/srv/share`: người sở hữu có quyền kiểm soát hoàn toàn; nhóm có quyền ghi và đọc; người dùng khác có quyền đọc và thực thi.
+   * Đối với thư mục `/srv/share/gv`: người sở hữu có quyền kiểm soát hoàn toàn; nhóm có quyền đọc và thực thi; người dùng khác không có quyền.
+   * Đối với thư mục `/srv/share/sv` và toàn bộ nội dung trong thư mục: người sở hữu có quyền ghi và đọc; nhóm có quyền kiểm soát hoàn toàn; người dùng khác có quyền thực thi.
+   * Đối với tập tin `/srv/share/gv/gv.txt`: người sở hữu có quyền kiểm soát hoàn toàn; nhóm và người dùng khác có quyền đọc và thực thi.
+   * Quyền đối với tập tin/thư mục nào không mô tả cụ thể thì để theo mặc định.
 
 ---
 
-## 2. CÁC LỆNH THỰC THI
+## 2. CÁC LỆNH THỰC THI (HƯỚNG DẪN TỪNG BƯỚC)
 
-### Giải Câu 1: Quản trị AD CLI
+---
+
+### BƯỚC 1: QUẢN TRỊ TÀI KHOẢN MIỀN TRÊN MÁY CHỦ DC01 (1 Điểm)
+*Thực hiện trên máy chủ DC01 dưới quyền root:*
 ```bash
-# 1. Tạo User
-sudo samba-tool user create sv1 Sinhvien1
-sudo samba-tool user create sv2 Sinhvien2
+# 1. Tạo 4 tài khoản người dùng trong miền
 sudo samba-tool user create gv1 Giangvien1
 sudo samba-tool user create gv2 Giangvien2
+sudo samba-tool user create sv1 Sinhvien1
+sudo samba-tool user create sv2 Sinhvien2
 
-# 2. Tạo Group & gán thành viên
-sudo samba-tool group add Giangvien
-sudo samba-tool group add Sinhvien
-sudo samba-tool group addmembers Giangvien gv1,gv2
-sudo samba-tool group addmembers Sinhvien sv1,sv2
+# 2. Tạo 2 nhóm trên miền: gv và sv
+sudo samba-tool group add gv
+sudo samba-tool group add sv
 
-# 3. Nghiệm thu
-sudo samba-tool group listmembers Giangvien
-sudo samba-tool group listmembers Sinhvien
+# 3. Gán thành viên vào nhóm
+sudo samba-tool group addmembers gv gv1,gv2
+sudo samba-tool group addmembers sv sv1,sv2
+
+# 4. Lệnh kiểm tra cho giáo viên chấm:
+sudo samba-tool group listmembers gv
+sudo samba-tool group listmembers sv
 ```
 
-### Giải Câu 2: Quản trị DNS qua `samba-tool dns`
+---
+
+### BƯỚC 2: CẤU HÌNH MẠNG & CHO LINUX CLIENT THAM GIA MIỀN (3 Điểm)
+*Thực hiện trên máy trạm Linux Client (Client2 - Ubuntu Desktop):*
+
 ```bash
-# 1. Tạo vùng tra cứu ngược (Reverse Zone)
-sudo samba-tool dns zonecreate dc01.dhcnhn.com 10.in-addr.arpa -U administrator
+# 1. Kiểm tra DNS trỏ về 10.0.0.2 và ping thông miền:
+ping -c 2 dhcnhn.com
 
-# 2. Thêm các bản ghi A
-sudo samba-tool dns add dc01.dhcnhn.com dhcnhn.com www A 10.0.0.3 -U administrator
-sudo samba-tool dns add dc01.dhcnhn.com dhcnhn.com mail A 10.0.0.4 -U administrator
+# 2. Cài đặt các gói công cụ gia nhập miền
+sudo apt update
+sudo apt install -y sssd sssd-tools realmd adcli
 
-# 3. Thêm bản ghi phân giải ngược PTR cho 10.0.0.2
-sudo samba-tool dns add dc01.dhcnhn.com 10.in-addr.arpa 2.0.0 PTR dc01.dhcnhn.com -U administrator
+# 3. Bật PAM tự động tạo thư mục home khi đăng nhập lần đầu
+echo "session optional pam_mkhomedir.so skel=/etc/skel umask=0077" | sudo tee -a /etc/pam.d/common-session
 
-# 4. Truy vấn nghiệm thu
-sudo samba-tool dns query dc01.dhcnhn.com dhcnhn.com @ ALL -U administrator
-sudo samba-tool dns query dc01.dhcnhn.com 10.in-addr.arpa @ ALL -U administrator
+# 4. Cho phép người dùng miền đăng nhập
+echo "* ; * ; * ; Al0000-2400 ; domain users" | sudo tee -a /etc/security/group.conf
+
+# 5. Thực hiện tham gia miền (Mật khẩu: Dhcnhn1)
+sudo realm -v join dhcnhn.com -U administrator
+
+# 6. Kiểm tra lấy điểm:
+realm list
+id gv1@dhcnhn.com
 ```
 
-### Giải Câu 3: DHCP Filter & POSIX ACL
+---
+
+### BƯỚC 3: CẤU HÌNH DỊCH VỤ DHCP DẢI 10-100 & GÁN CỐ ĐỊNH MAC (3 Điểm)
+*Thực hiện trên máy chủ DC01:*
+
+1. Mở file cấu hình `/etc/dhcp/dhcpd.conf`:
 ```bash
-# 1. Cấu hình DHCP có bộ lọc deny booting
-sudo tee -a /etc/dhcp/dhcpd.conf << 'EOF'
+sudo nano /etc/dhcp/dhcpd.conf
+```
+2. Thêm vào cuối file cấu hình:
+```text
+# Thời gian thuê mặc định: 5 phút (5 * 60 = 300 giây)
+default-lease-time 300;
+
+# Thời gian thuê tối đa: 1,5 ngày (1.5 * 86400 = 129600 giây)
+max-lease-time 129600;
+authoritative;
 
 subnet 10.0.0.0 netmask 255.0.0.0 {
     option routers 10.0.0.254;
+    option subnet-mask 255.0.0.0;
     option domain-name "dhcnhn.com";
     option domain-name-servers 10.0.0.2;
-    range 10.0.0.10 10.0.0.50;
 
-    host may-bi-chan {
-        hardware ethernet 22:22:22:22:22:22;
-        deny booting;
+    # Cấp dải động từ 10.0.0.10 đến 10.0.0.100
+    range 10.0.0.10 10.0.0.100;
+
+    # Cấu hình gán cố định IP 10.0.0.5 cho MAC 11:11:11:11:11:11
+    host client-giang-vien {
+        hardware ethernet 11:11:11:11:11:11;
+        fixed-address 10.0.0.5;
     }
 }
-EOF
-
-sudo dhcpd -t -cf /etc/dhcp/dhcpd.conf && sudo systemctl restart isc-dhcp-server
-
-# 2. Tạo thư mục & cấp quyền cơ bản
-sudo mkdir -p /srv/share
-sudo chmod 775 /srv/share
-
-# 3. Gán quyền ACL nâng cao
-sudo setfacl -m g:Giangvien:rwx /srv/share
-sudo setfacl -m g:Sinhvien:r-x /srv/share
-
-# 4. Kiểm tra kết quả
-getfacl /srv/share
+```
+3. Kiểm tra cú pháp và khởi động lại dịch vụ:
+```bash
+sudo dhcpd -t -cf /etc/dhcp/dhcpd.conf
+sudo systemctl restart isc-dhcp-server
+sudo systemctl status isc-dhcp-server
 ```
 
 ---
 
-## 3. LƯU Ý KỸ THUẬT
+### BƯỚC 4: QUẢN TRỊ TẬP TIN / THƯ MỤC MA TRẬN CHMOD (3 Điểm)
+*Thực hiện trên máy chủ DC01:*
 
-1. **Cú pháp bản ghi PTR:** Đối với mạng lớp A `10.0.0.0/8`, zone ngược là `10.in-addr.arpa`. Bản ghi PTR cho IP `10.0.0.2` sẽ có octet ngược là `2.0.0`.
-2. **Xác thực quyền quản trị:** Khi chạy `samba-tool dns`, luôn thêm cờ `-U administrator` để xác thực quyền quản trị miền (mật khẩu: `Dhcnhn1`).
-3. **Ký hiệu ACL:** Thư mục có áp dụng ACL sẽ xuất hiện dấu cộng (`+`) ở cuối chuỗi quyền khi kiểm tra bằng `ls -ld` (ví dụ: `drwxrwxr-x+`).
+```bash
+# 1. Tạo thư mục dùng chung share tại /srv/ chứa thư mục GV và SV
+sudo mkdir -p /srv/share/{gv,sv}
+
+# 2. Tạo tập tin gv.txt và sv.txt
+sudo touch /srv/share/gv/gv.txt /srv/share/sv/sv.txt
+echo "Tai lieu GV" | sudo tee /srv/share/gv/gv.txt
+echo "Tai lieu SV" | sudo tee /srv/share/sv/sv.txt
+
+# 3. Phân quyền chính xác theo ma trận octal:
+# /srv/share: Owner rwx (7), Group rw- (6), Other r-x (5) -> 765
+sudo chmod 765 /srv/share
+
+# /srv/share/gv: Owner rwx (7), Group r-x (5), Other --- (0) -> 750
+sudo chmod 750 /srv/share/gv
+
+# /srv/share/sv và toàn bộ nội dung: Owner rw- (6), Group rwx (7), Other --x (1) -> -R 671
+sudo chmod -R 671 /srv/share/sv
+
+# /srv/share/gv/gv.txt: Owner rwx (7), Group & Other r-x (5) -> 755
+sudo chmod 755 /srv/share/gv/gv.txt
+
+# 4. Lệnh kiểm tra cho giáo viên chấm:
+ls -ld /srv/share /srv/share/gv /srv/share/sv
+ls -l /srv/share/gv/gv.txt
+```
+
+---
+
+## 3. LƯU Ý KỸ THUẬT QUAN TRỌNG
+
+1. **Quy đổi thời gian thuê DHCP:**
+   * 5 phút = $5 \times 60 = \mathbf{300}$ giây.
+   * 1,5 ngày = $1.5 \times 24 \times 3600 = \mathbf{129600}$ giây.
+2. **Cú pháp gán IP cố định (Reservation):** Bắt buộc đặt trong cặp ngoặc nhọn của khối `subnet 10.0.0.0` với chỉ thị `hardware ethernet 11:11:11:11:11:11;` và `fixed-address 10.0.0.5;`.
+3. **Mã quyền số 671:** Nhớ thêm cờ `-R` khi chạy `chmod -R 671 /srv/share/sv` vì đề ghi rõ *"và toàn bộ nội dung trong thư mục"*.
